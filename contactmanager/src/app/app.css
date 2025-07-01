@@ -1,5 +1,5 @@
-#theForm, #thelist {
-  padding: 10px;
-  border: 2px solid #000;
-  margin: 10px;
+#theForm, #theList {
+    padding: 10px;
+    border: 2px solid black;
+    margin: 10px;
 }

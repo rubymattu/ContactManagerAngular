@@ -1,30 +1,30 @@
 <?php
-  require_once 'connect.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+require_once 'connect.php';
 
-  $contacts = [];
-  $sql = "SELECT imageName, typeID, contactID, firstName, lastName, emailAddress, phone, status, dob 
-          FROM contacts";
+$contacts = [];
+$sql = "SELECT imageName, typeID, contactID, firstName, lastName, emailAddress, phoneNumber, status, dob FROM contacts";
 
-  $result = mysqli_query($con, $sql);
-  if ($result) {
-    $count = 0;
+$result = mysqli_query($con, $sql);
+if ($result) {
     while ($row = mysqli_fetch_assoc($result)) {
-      $contacts[$count]['imageName'] = $row['imageName'];
-      $contacts[$count]['typeID'] = $row['typeID'];
-      $contacts[$count]['contactID'] = $row['contactID'];
-      $contacts[$count]['firstName'] = $row['firstName'];
-      $contacts[$count]['lastName'] = $row['lastName'];
-      $contacts[$count]['emailAddress'] = $row['emailAddress'];
-      $contacts[$count]['phone'] = $row['phone'];
-      $contacts[$count]['status'] = $row['status'];
-      $contacts[$count]['dob'] = $row['dob'];
-      $count++; 
+        $contacts[] = [
+            'imageName' => $row['imageName'],
+            'typeID' => $row['typeID'],
+            'contactID' => $row['contactID'],
+            'firstName' => $row['firstName'],
+            'lastName' => $row['lastName'],
+            'emailAddress' => $row['emailAddress'],
+            'phone' => $row['phoneNumber'],
+            'status' => $row['status'],
+            'dob' => $row['dob']
+        ];
     }
-  }
-
-  echo json_encode($contacts);
-  else {
-    http_response_code(404);
-  }
-
+    echo json_encode($contacts);
+} else {
+    http_response_code(500);
+    echo json_encode(["message" => "Database query failed."]);
+}
 ?>
