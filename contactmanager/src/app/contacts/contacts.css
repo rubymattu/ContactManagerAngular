@@ -20,4 +20,10 @@
     width: 30%;
     margin-left: 10px;
 }
+.danger {
+    color: rgb(255, 99, 99);
+}
+.help-block {
+    margin-left: 10px;
+}
 

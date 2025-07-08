@@ -17,18 +17,24 @@ export class ContactService {
         // No statements required
     }
 
-getAll() {
-  return this.http.get<Contact[]>(`${this.baseUrl}/list`);
-}
-
-
-    add(contact: Contact) {
-        return this.http.post(`${this.baseUrl}/add`, {data: contact}).pipe(
+    getAll() {
+        return this.http.get(`${this.baseUrl}/list`).pipe(
             map((res: any) => {
                 return res['data'];
             })
         );
     }
+
+add(contact: Contact) {
+  return this.http.post(
+    `${this.baseUrl}/add`,
+    { data: contact },
+    { headers: { 'Content-Type': 'application/json' } }
+  ).pipe(
+    map((res: any) => res.data)
+  );
+}
+
 
     edit(contact: Contact)
     {
