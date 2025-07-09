@@ -1,5 +1,10 @@
-#about, #links {
+#about {
     padding: 10px;
     border: 2px solid black;
     margin: 10px;
+}
+#links {
+    position: fixed;
+    top: 10px;
+    right: 110px;
 }

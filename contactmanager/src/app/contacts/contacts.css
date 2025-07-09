@@ -1,29 +1,77 @@
+#theList {
+  width: 100%;
+  margin: 40px auto;
+  padding: 25px;
+  background-color: #f9f9f9;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
 
-#theForm, #theList, #links {
-    padding: 50px;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    margin: 10px;
+#theList h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #0d6efd;
 }
-.form-group > input[type="text"], input[type="email"], input[type="date"], input[type="file"] {
-    width: 30%;
-    padding: 10px;
-    margin: 5px 0 20px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    display: inline;
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 10px;
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid #e3e3e3;
+  border-radius: 6px;
 }
-.form-group > label {
-    width: 10%;
+
+.row input.form-control {
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
 }
-.col-2 > input[type="button"] {
-    width: 30%;
-    margin-left: 10px;
+
+.row input.form-control:focus {
+  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
 }
-.danger {
-    color: rgb(255, 99, 99);
+
+
+.row input[type="button"] {
+  margin-right: 5px;
+  min-width: 70px;
 }
-.help-block {
-    margin-left: 10px;
+
+.row .btn {
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 5px;
+}
+.col-2 > button {
+  margin-left: 50px;
+}
+
+@media (max-width: 768px) {
+  .row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .col-2 {
+    width: 100%;
+  }
+
+  .row img {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    align-self: center;
+  }
+}
+
+#links {
+    position: fixed;
+    top: 10px;
+    right: 110px;
 }
 
