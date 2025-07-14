@@ -20,20 +20,34 @@
   </a>
 </div>
 
-<div id="theList">
+ <div id="theList">
     <h2>Contact List</h2>    
 
     <div>
       <div *ngFor="let item of contacts;let i = index;" class="row">
+                <!-- Example of read-only row -->
+        <div class="col-2">{{ item.firstName }}</div>
+        <div class="col-2">{{ item.lastName }}</div>
+        <div class="col-2">{{ item.emailAddress }}</div>
+        <div class="col-2">{{ item.phone }}</div>
+        <div class="col-2">
+          <img src="http://localhost/contactmanagerangular/contactapi/uploads/{{item.imageName}}" width="75" height="75" alt="{{item.imageName}}" />
+        </div>
+
+        <div class="col-2">
+          <button class="btn btn-success btn-sm" [routerLink]="['/edit', item.contactID]">Edit</button>
+          <button class="btn btn-danger btn-sm" (click)="deleteContact(item.contactID ? item.contactID : 0)">Delete</button>
+        </div>
+
   
-        <!-- <div class="col-2">
+        <!--   <div class="col-2">
           <input type="text"
             [(ngModel)]="contacts[i].contactID"
             class="form-control"
             required
             #contactID="ngModel"
             [ngClass]="{ 'is-invalid': contactID.touched && contactID.invalid }">
-        </div> -->
+        </div> 
   
         <div class="col-2">
           <input type="text"
@@ -70,32 +84,32 @@
             #phone="ngModel"
             [ngClass]="{ 'is-invalid': phone.touched && phone.invalid }">
         </div>      
-  <div class="col-2 d-flex align-items-center gap-2">
-  <img 
-    src="http://localhost/contactmanagerangular/contactapi/uploads/{{item.imageName}}" 
-    width="75" 
-    height="75" 
-    alt="{{item.imageName}}" />
+          <div class="col-2 d-flex align-items-center gap-2">
+          <img 
+            src="http://localhost/contactmanagerangular/contactapi/uploads/{{item.imageName}}" 
+            width="75" 
+            height="75" 
+            alt="{{item.imageName}}" />
 
-  <div class="d-flex gap-1">
-    <button 
-      class="btn btn-success btn-sm"
-      [disabled]="firstName.invalid || lastName.invalid || emailAddress.invalid || phone.invalid"
-      (click)="editContact(firstName, lastName, emailAddress, phone, item.contactID)">
-      Edit
-    </button>
+          <div class="d-flex gap-1">
+            <button 
+              class="btn btn-success btn-sm"
+              [disabled]="firstName.invalid || lastName.invalid || emailAddress.invalid || phone.invalid"
+              (click)="editContact(firstName, lastName, emailAddress, phone, item.contactID)">
+              Edit
+            </button>
 
-    <button 
-      class="btn btn-danger btn-sm"
-      (click)="deleteContact(item.contactID ? item.contactID : 0)">
-      Delete
-    </button>
-  </div>
-</div>
+            <button 
+              class="btn btn-danger btn-sm"
+              (click)="deleteContact(item.contactID ? item.contactID : 0)">
+              Delete
+            </button>
+          </div>
+        </div>-->
   
       </div>
     </div>
 
 
-</div>
+</div> 
 
