@@ -67,8 +67,8 @@
       <label>Phone Number: </label>
       <input type="text"
         class="form-control"
-        name="phone"
-        [(ngModel)]="contact.phone"
+        name="phoneNumber"
+        [(ngModel)]="contact.phoneNumber"
         #contactModel="ngModel"
         required>
       <span class="help-block danger" *ngIf="contactModel.errors?.['required'] && contactModel.touched">

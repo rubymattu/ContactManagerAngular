@@ -16,6 +16,11 @@ export class ContactService {
     {
         // No statements required
     }
+get(contactID: number) {
+  return this.http.get<Contact>(`http://localhost/contactmanagerangular/contactapi/view.php?contactID=${contactID}`);
+}
+
+
 
     getAll() {
         return this.http.get(`${this.baseUrl}/list`).pipe(
@@ -26,6 +31,7 @@ export class ContactService {
     }
 
 add(contact: Contact) {
+    console.log('Submitting contact:', contact);
   return this.http.post(
     `${this.baseUrl}/add`,
     { data: contact },

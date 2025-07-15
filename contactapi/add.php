@@ -12,7 +12,7 @@
 
         // Validate
         if(trim($request->data->firstName) === '' || trim($request->data->lastName) === '' ||
-            trim($request->data->emailAddress) === '' || trim($request->data->phone) === '' ||
+            trim($request->data->emailAddress) === '' || trim($request->data->phoneNumber) === '' ||
             trim($request->data->status) === '' || trim($request->data->dob) === '')
             {
                 return http_response_code(400);
@@ -22,7 +22,7 @@
         $firstName = mysqli_real_escape_string($con, trim($request->data->firstName));
         $lastName = mysqli_real_escape_string($con, trim($request->data->lastName));
         $emailAddress = mysqli_real_escape_string($con, trim($request->data->emailAddress));
-        $phone = mysqli_real_escape_string($con, trim($request->data->phone));
+        $phoneNumber = mysqli_real_escape_string($con, trim($request->data->phoneNumber));
         $status = mysqli_real_escape_string($con, trim($request->data->status));
         $dob = mysqli_real_escape_string($con, trim($request->data->dob));
         $imageName = mysqli_real_escape_string($con, trim($request->data->imageName));
@@ -36,7 +36,9 @@
         }
 
         // Store the data
-        $sql = "INSERT INTO `contacts`(`contactID`,`firstName`,`lastName`, `emailAddress`, `phoneNumber`, `status`, `dob`, `imageName`) VALUES (null,'{$firstName}','{$lastName}','{$emailAddress}','{$phone}','{$status}','{$dob}', '{$new}')";
+        $sql = "INSERT INTO `contacts`(`contactID`,`firstName`,`lastName`, `emailAddress`, `phoneNumber`, `status`, `dob`, `imageName`) 
+                VALUES 
+                (null,'{$firstName}','{$lastName}','{$emailAddress}','{$phoneNumber}','{$status}','{$dob}', '{$new}')";
 
         if(mysqli_query($con, $sql))
         {
@@ -46,7 +48,7 @@
                 'firstName' => $firstName,
                 'lastName' => $lastName,
                 'emailAddress' => $emailAddress,
-                'phone' => $phone,
+                'phoneNumber' => $phoneNumber,
                 'status' => $status,
                 'dob' => $dob,
                 'imageName' => $new,

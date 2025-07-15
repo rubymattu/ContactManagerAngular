@@ -13,7 +13,7 @@
             $contacts[$count]['firstName'] = $row['firstName'];
             $contacts[$count]['lastName'] = $row['lastName'];
             $contacts[$count]['emailAddress'] = $row['emailAddress'];
-            $contacts[$count]['phone'] = $row['phoneNumber'];
+            $contacts[$count]['phoneNumber'] = $row['phoneNumber'];
             $contacts[$count]['status'] = $row['status'];
             $contacts[$count]['dob'] = $row['dob'];
             $contacts[$count]['imageName'] = $row['imageName'];

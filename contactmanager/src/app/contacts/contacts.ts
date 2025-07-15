@@ -18,14 +18,17 @@ import { RouterModule } from '@angular/router';
 export class Contacts implements OnInit {
   title = 'ContactManager';
   public contacts: Contact[] = [];
-  contact: Contact = {firstName:'', lastName:'', emailAddress:'', phone:'', status:'', dob:'', imageName:'', typeID: 0};
+  contact: Contact = {firstName:'', lastName:'', emailAddress:'', phoneNumber:'', status:'', dob:'', imageName:'', typeID: 0};
 
   error = '';
   success = '';
 
   selectedFile: File | null = null;
 
-  constructor(private contactService: ContactService, private http: HttpClient, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private contactService: ContactService, 
+    private http: HttpClient, 
+    private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.getContacts();
@@ -83,7 +86,7 @@ export class Contacts implements OnInit {
     console.log(+contactID);
     
 
-    this.contactService.edit({firstName: firstName.value, lastName: lastName.value, emailAddress: emailAddress.value, phone: phone.value, contactID: +contactID})
+    this.contactService.edit({firstName: firstName.value, lastName: lastName.value, emailAddress: emailAddress.value, phoneNumber: phone.value, contactID: +contactID})
       .subscribe(
         (res) => {
           this.cdr.detectChanges(); // <--- force UI update
