@@ -31,13 +31,12 @@ get(contactID: number) {
     }
 
 add(contact: Contact) {
-    console.log('Submitting contact:', contact);
-  return this.http.post(
-    `${this.baseUrl}/add`,
-    { data: contact },
-    { headers: { 'Content-Type': 'application/json' } }
-  ).pipe(
-    map((res: any) => res.data)
+  return this.http.post<Contact>(
+    'http://localhost/contactmanagerangular/contactapi/add.php',
+    contact,
+    {
+      headers: { 'Content-Type': 'application/json' }
+    }
   );
 }
 

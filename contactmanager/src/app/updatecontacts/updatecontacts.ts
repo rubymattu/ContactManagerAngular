@@ -23,9 +23,12 @@ export class Updatecontacts implements OnInit {
 
   success = '';
   error = '';
+  types: { typeID: number, typeName: string }[] = [];
+
   selectedFile: File | null = null;
   previewUrl: string | null = null;
   originalImageName: string = '';
+  maxDate: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -34,19 +37,41 @@ export class Updatecontacts implements OnInit {
     private http: HttpClient,
     private cdr: ChangeDetectorRef
   ) {}
+ngOnInit(): void {
+      const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    this.maxDate = `${yyyy}-${mm}-${dd}`;
 
-  ngOnInit(): void {
-    this.contactID = +this.route.snapshot.paramMap.get('id')!;
-    this.contactService.get(this.contactID).subscribe({
-      next: (data: Contact) => {
-        this.contact = data;
-        this.originalImageName = data.imageName ?? '';
-        this.previewUrl = `http://localhost/contactmanagerangular/contactapi/uploads/${this.originalImageName}`;
-        this.cdr.detectChanges();
-      },
-      error: () => this.error = 'Error loading contact.'
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.contactService.get(id).subscribe((res: Contact) => {
+      this.contact = res;
     });
-  }
+  this.contactID = +this.route.snapshot.paramMap.get('id')!;
+
+  // Load contact types first
+  this.http.get<{ typeID: number, typeName: string }[]>('http://localhost/contactmanagerangular/contactapi/types.php')
+    .subscribe({
+      next: (data) => {
+        this.types = data;
+      },
+      error: () => this.error = 'Failed to load contact types'
+    });
+
+  // Then load contact details
+  this.contactService.get(this.contactID).subscribe({
+    next: (data: Contact) => {
+      data.typeID = Number(data.typeID); // convert typeID to number
+      this.contact = data;
+      this.originalImageName = data.imageName ?? '';
+      this.previewUrl = `http://localhost/contactmanagerangular/contactapi/uploads/${this.originalImageName}`;
+      this.cdr.detectChanges();
+    },
+    error: () => this.error = 'Error loading contact.'
+  });
+}
+
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -64,11 +89,6 @@ export class Updatecontacts implements OnInit {
 
   updateContact(form: NgForm) {
 
-     if (!this.contact.phoneNumber) {
-    console.log('Phone field is empty or undefined.');
-  } else {
-    console.log('Phone field has value:', this.contact.phoneNumber);
-  }
     if (form.invalid) return;
 
     const formData = new FormData();
@@ -80,6 +100,7 @@ export class Updatecontacts implements OnInit {
     formData.append('status', this.contact.status ?? '');
     formData.append('dob', this.contact.dob ?? '');
     formData.append('originalImageName', this.originalImageName);
+    formData.append('typeID', this.contact.typeID?.toString() ?? '0');
 
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);

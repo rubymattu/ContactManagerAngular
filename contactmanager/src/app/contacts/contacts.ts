@@ -32,6 +32,7 @@ export class Contacts implements OnInit {
 
   ngOnInit(): void {
     this.getContacts();
+    this.cdr.detectChanges(); // Ensure UI is updated after data fetch
   }
 
   getContacts(): void {

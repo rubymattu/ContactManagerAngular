@@ -10,11 +10,12 @@ $phone = trim($_POST['phoneNumber'] ?? '');
 $status = trim($_POST['status'] ?? '');
 $dob = trim($_POST['dob'] ?? '');
 $originalImageName = $_POST['originalImageName'] ?? '';
+$typeID = isset($_POST['typeID']) ? (int)$_POST['typeID'] : 0;
 
 // Validation
 if (
     $contactID < 1 || $firstName === '' || $lastName === '' ||
-    $emailAddress === '' || $phone === ''
+    $emailAddress === '' || $phone === '' 
 ) {
     http_response_code(400);
     exit;
@@ -28,6 +29,7 @@ $emailAddress = mysqli_real_escape_string($con, $emailAddress);
 $phone = mysqli_real_escape_string($con, $phone);
 $status = mysqli_real_escape_string($con, $status);
 $dob = mysqli_real_escape_string($con, $dob);
+$typeID = mysqli_real_escape_string($con, $typeID);
 
 $imageName = $originalImageName;
 
@@ -65,7 +67,8 @@ $sql = "UPDATE `contacts` SET
           `phoneNumber` = '$phone',
           `status` = '$status',
           `dob` = '$dob',
-          `imageName` = '$imageName'
+          `imageName` = '$imageName',
+            `typeID` = '$typeID'
         WHERE `contactID` = '$contactID'
         LIMIT 1";
 

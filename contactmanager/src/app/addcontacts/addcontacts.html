@@ -105,11 +105,22 @@
         name="dob"
         [(ngModel)]="contact.dob"
         #contactModel="ngModel"
+        [max]="maxDate"
         required>
       <span class="help-block danger" *ngIf="contactModel.errors?.['required'] && contactModel.touched">
         The date of birth is required
       </span>
     </div>
+
+<div class="form-group">
+  <label for="typeID">Contact Type</label>
+  <select id="typeID" name="typeID" class="form-control" [(ngModel)]="contact.typeID" required>
+    <option value="" disabled>Select a contact type</option>
+    <option *ngFor="let t of types" [value]="+t.typeID">{{ t.typeName }}</option>
+  </select>
+</div>
+
+
 
     <div class="form-group">
       <label>Upload Image: </label>
