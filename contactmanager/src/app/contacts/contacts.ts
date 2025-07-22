@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Contact } from '../contact';
 import { ContactService } from '../contact.service';
+import { Auth } from '../services/auth';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
@@ -22,17 +23,19 @@ export class Contacts implements OnInit {
 
   error = '';
   success = '';
-
+  userName: string = '';
   selectedFile: File | null = null;
 
   constructor(
-    private contactService: ContactService, 
+    private contactService: ContactService,
+    public authService: Auth, 
     private http: HttpClient, 
     private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.getContacts();
     this.cdr.detectChanges(); // Ensure UI is updated after data fetch
+    this.userName = localStorage.getItem('username') || 'Guest';
   }
 
   getContacts(): void {

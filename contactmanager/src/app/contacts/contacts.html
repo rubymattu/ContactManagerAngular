@@ -20,20 +20,23 @@
   </a>
 </div>
 
- <div id="theList">
-    <h2>Contact List</h2>    
+<div id="theList">
+  <div class="toolbar">
+    <h2>{{ userName }}'s Contact List</h2>
+    <button (click)="authService.logout()" class="btn btn-sm btn-danger">Logout</button>
+  </div>   
 
-    <div>
-      <div class="row header-row">
-  <div class="col-2">First Name</div>
-  <div class="col-2">Last Name</div>
-  <div class="col-2">Email</div>
-  <div class="col-2">Status</div>
-  <div class="col-2">DOB</div>
-  <div class="col-2">Phone</div>
-  <div class="col-2">Image</div>
-  <div class="col-2">Actions</div>
-</div>
+  <div>
+    <div class="row header-row">
+    <div class="col-2">First Name</div>
+    <div class="col-2">Last Name</div>
+    <div class="col-2">Email</div>
+    <div class="col-2">Status</div>
+    <div class="col-2">DOB</div>
+    <div class="col-2">Phone</div>
+    <div class="col-2">Image</div>
+    <div class="col-2">Actions</div>
+  </div>
       <div *ngFor="let item of contacts;let i = index;" class="row">
                 <!-- Example of read-only row -->
         <div class="col-2">{{ item.firstName }}</div>

@@ -41,6 +41,14 @@
   font-size: 0.8rem;
   padding: 5px 10px;
 }
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f2f2f2;
+  border-bottom: 1px solid #ccc;
+}
 
 /* Responsive layout */
 @media (max-width: 992px) {

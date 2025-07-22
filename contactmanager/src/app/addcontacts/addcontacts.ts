@@ -4,6 +4,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Contact } from '../contact';
 import { ContactService } from '../contact.service';
+import { Auth } from '../services/auth';
 import { RouterModule, Router } from '@angular/router';
 
 @Component({
@@ -24,11 +25,13 @@ export class Addcontacts implements OnInit {
   selectedFile: File | null = null;
   error = '';
   success = '';
-    maxDate: string = '';
+  maxDate: string = '';
   types: { typeID: number, typeName: string }[] = [];
+  userName: string = '';
 
   constructor(
     private contactService: ContactService,
+    public authService: Auth,
     private http: HttpClient,
     private router: Router,
     private cdr: ChangeDetectorRef
@@ -41,6 +44,9 @@ export class Addcontacts implements OnInit {
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
     this.maxDate = `${yyyy}-${mm}-${dd}`;
+
+    this.userName = localStorage.getItem('username') || 'Guest';
+
   }
 
   loadTypes(): void {

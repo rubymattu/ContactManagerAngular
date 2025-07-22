@@ -5,6 +5,7 @@ import { NgForm, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Contact } from '../contact';
 import { ContactService } from '../contact.service';
+import { Auth } from '../services/auth';
 
 @Component({
   selector: 'app-updatecontacts',
@@ -29,16 +30,19 @@ export class Updatecontacts implements OnInit {
   previewUrl: string | null = null;
   originalImageName: string = '';
   maxDate: string = '';
+  userName: string = '';
 
   constructor(
     private route: ActivatedRoute,
+    public authService: Auth,
     private contactService: ContactService,
     private router: Router,
     private http: HttpClient,
     private cdr: ChangeDetectorRef
   ) {}
 ngOnInit(): void {
-      const today = new Date();
+    this.userName = localStorage.getItem('username') || 'Guest';
+    const today = new Date();
     const yyyy = today.getFullYear();
     const mm = String(today.getMonth() + 1).padStart(2, '0');
     const dd = String(today.getDate()).padStart(2, '0');
