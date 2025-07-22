@@ -58,6 +58,13 @@ export class Addcontacts implements OnInit {
 
   addContact(f: NgForm) {
     this.resetAlerts();
+    const phoneRegex = /^(\(\d{3}\)\s|\d{3}-)\d{3}-\d{4}$/;
+    if (!phoneRegex.test(this.contact.phoneNumber ??'')) {
+      this.error = 'Please enter a valid phone number.';
+      this.cdr.detectChanges();
+      return;
+    }
+
 
     if (!this.contact.imageName) {
       this.contact.imageName = 'placeholder_100.jpg';

@@ -47,13 +47,12 @@
     <div *ngIf="email.errors?.['pattern']">Enter a valid email address.</div>
   </div>
 </div>
+    <input type="tel" name="phone" [(ngModel)]="contact.phoneNumber"
+    class="form-control" required pattern="^(\(\d{3}\)\s|\d{3}-)\d{3}-\d{4}$" />
 
-   <input type="tel" name="phone" [(ngModel)]="contact.phoneNumber"
-       class="form-control" required pattern="^[0-9\-\+\s\(\)]{7,15}$" />
-
-<div *ngIf="f.submitted && f.controls['phone']?.invalid" class="text-danger">
-  Please enter a valid phone number.
-</div>
+  <div *ngIf="f.submitted && f.controls['phone']?.invalid" class="text-danger">
+    Please enter a valid phone number in the format (123) 456-7890 or 123-456-7890.
+  </div>
 
 
     <div class="form-group">

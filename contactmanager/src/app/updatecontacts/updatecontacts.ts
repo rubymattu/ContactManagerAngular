@@ -89,6 +89,13 @@ ngOnInit(): void {
 
   updateContact(form: NgForm) {
 
+    const phoneRegex = /^(\(\d{3}\)\s|\d{3}-)\d{3}-\d{4}$/;
+    if (!phoneRegex.test(this.contact.phoneNumber ??'')) {
+      this.error = 'Please enter a valid phone number.';
+      this.cdr.detectChanges();
+      return;
+    }
+
     if (form.invalid) return;
 
     const formData = new FormData();
