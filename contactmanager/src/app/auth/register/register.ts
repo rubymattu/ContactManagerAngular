@@ -11,7 +11,8 @@ import { ChangeDetectorRef } from '@angular/core';
   selector: 'app-register',
   imports: [CommonModule, FormsModule, HttpClientModule, RouterModule],
   templateUrl: './register.html',
-  styleUrl: './register.css'
+  styleUrl: './register.css',
+  providers: [Auth]
 })
 
 export class Register {
@@ -23,24 +24,39 @@ export class Register {
 
   constructor(private auth: Auth, private router: Router, private cdr: ChangeDetectorRef ) {}
 
+  
   register() {
+    const trimmedUsername = this.userName.trim();
+    const trimmedPassword = this.password.trim();
+    const trimmedEmail = this.emailAddress.trim();
+  
+    // Basic front-end validation
+    if (!trimmedUsername || !trimmedPassword || !trimmedEmail) {
+      this.errorMessage = 'All fields are required.';
+      this.successMessage = '';
+      return;
+    }
+  
+    // Call backend registration
     this.auth.register({
-      userName: this.userName,
-      password: this.password,
-      emailAddress: this.emailAddress
+      userName: trimmedUsername,
+      password: trimmedPassword,
+      emailAddress: trimmedEmail
     }).subscribe({
       next: res => {
         if (res.success) {
-          this.auth.setAuth(true);
           this.successMessage = 'Registration successful. Please log in.';
+          this.errorMessage = '';
           setTimeout(() => this.router.navigate(['/login']), 1500);
         } else {
           this.errorMessage = res.message;
-          this.cdr.detectChanges(); // Ensure UI updates with error message
-
+          this.successMessage = '';
         }
       },
-      error: () => this.errorMessage = 'Server error during registration.'
+      error: () => {
+        this.errorMessage = 'Server error during registration.';
+        this.successMessage = '';
+      }
     });
   }
 }
