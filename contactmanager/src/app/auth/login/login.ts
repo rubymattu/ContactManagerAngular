@@ -4,6 +4,7 @@ import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,7 @@ export class Login {
   password = '';
   errorMessage = '';
 
-  constructor(private auth: Auth, private router: Router) {}
+  constructor(private auth: Auth, private router: Router, private cdr: ChangeDetectorRef) {}
 
   login() {
     this.auth.login({ userName: this.userName, password: this.password }).subscribe({
@@ -29,6 +30,7 @@ export class Login {
           this.router.navigate(['/contacts']);
         } else {
           this.errorMessage = res.message;
+          this.cdr.detectChanges(); // Ensure UI updates with error message
         }
       },
       error: () => this.errorMessage = 'Server error during login.'
