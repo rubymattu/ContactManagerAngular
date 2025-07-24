@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { NgForm, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Contact } from '../contact';
@@ -124,7 +124,16 @@ ngOnInit(): void {
         this.success = 'Contact updated successfully';
         this.router.navigate(['/contacts']);
       },
-      error: () => this.error = 'Update failed'
+         error: (err: HttpErrorResponse) => {
+        if (err.status === 409) {
+          const body = err.error;
+          this.error = body?.error || 'Duplicate entry detected';
+          this.cdr.detectChanges();
+        } else {
+          this.error = 'Update failed';
+          this.cdr.detectChanges();
+        }
+      }
     });
   }
 }
