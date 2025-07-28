@@ -7,6 +7,15 @@
   margin: 40px auto;
   background-color: #f9f9f9;
 }
+#theForm {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 25px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
 .toolbar {
   display: flex;
   justify-content: space-between;

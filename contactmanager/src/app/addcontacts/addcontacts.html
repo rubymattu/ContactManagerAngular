@@ -33,11 +33,15 @@
         class="form-control"
         name="firstName"
         [(ngModel)]="contact.firstName"
-        #contactModel="ngModel"
-        required>
-      <span class="help-block danger" *ngIf="contactModel.errors?.['required'] && contactModel.touched">
-        The first name is required
-      </span>
+        #firstName="ngModel"
+        required
+        maxlength="50">
+      <div *ngIf="firstName.errors?.['required'] && firstName.touched" class="text-danger">
+        The first name is required.
+      </div>
+      <div *ngIf="firstName.errors?.['maxlength'] && firstName.touched" class="text-danger">
+        Max 50 characters allowed.
+      </div>
     </div>
 
     <div class="form-group">
@@ -46,60 +50,86 @@
         class="form-control"
         name="lastName"
         [(ngModel)]="contact.lastName"
-        #contactModel="ngModel"
-        required>
-      <span class="help-block danger" *ngIf="contactModel.errors?.['required'] && contactModel.touched">
-        The last name is required
-      </span>
+        #lastName="ngModel"
+        required
+        maxlength="50">
+      <div *ngIf="lastName.errors?.['required'] && lastName.touched" class="text-danger">
+        The last name is required.
+      </div>
+      <div *ngIf="lastName.errors?.['maxlength'] && lastName.touched" class="text-danger">
+        Max 50 characters allowed.
+      </div>
     </div>
 
     <div class="form-group">
-  <label>Email Address</label>
-  <input
-    type="email"
-    name="emailAddress"
-    class="form-control"
-    [(ngModel)]="contact.emailAddress"
-    required
-    pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-    #email="ngModel"
-  />
-  <div *ngIf="email.invalid && email.touched" class="text-danger">
-    <div *ngIf="email.errors?.['required']">Email is required.</div>
-    <div *ngIf="email.errors?.['pattern']">Enter a valid email address.</div>
-  </div>
-  </div>
-     <div class="form-group">
-  <label>Phone Number</label>
+      <label>Email Address</label>
+      <input
+        type="email"
+        name="emailAddress"
+        class="form-control"
+        [(ngModel)]="contact.emailAddress"
+        #email="ngModel"
+        required
+        maxlength="100"
+        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+      />
+      <div *ngIf="email.errors?.['required'] && email.touched" class="text-danger">
+        Email is required.
+      </div>
+      <div *ngIf="email.errors?.['maxlength'] && email.touched" class="text-danger">
+        Max 100 characters allowed.
+      </div>
+      <div *ngIf="email.errors?.['pattern'] && email.touched" class="text-danger">
+        Enter a valid email address.
+      </div>
+    </div>
 
-    <input type="tel" name="phone" [(ngModel)]="contact.phoneNumber"
-    class="form-control" required pattern="^(\(\d{3}\)\s|\d{3}-)\d{3}-\d{4}$" />
-
-  <div *ngIf="f.submitted && f.controls['phone']?.invalid" class="text-danger">
-    Please enter a valid phone number in the format (123) 456-7890 or 123-456-7890.
-  </div>
-  </div>
+    <div class="form-group">
+      <label>Phone Number</label>
+      <input 
+        type="tel" 
+        name="phone" 
+        [(ngModel)]="contact.phoneNumber"
+        #phone="ngModel"
+        class="form-control" 
+        required 
+        maxlength="14" 
+        pattern="^(\(\d{3}\)\s|\d{3}-)\d{3}-\d{4}$" 
+      />
+      <div *ngIf="phone.errors?.['required'] && phone.touched" class="text-danger">
+        Phone number is required.
+      </div>
+      <div *ngIf="phone.errors?.['maxlength'] && phone.touched" class="text-danger">
+        Max 14 characters allowed.
+      </div>
+      <div *ngIf="phone.errors?.['pattern'] && phone.touched" class="text-danger">
+        Please enter a valid phone number in the format (123) 456-7890 or 123-456-7890.
+      </div>
+    </div>
 
     <div class="form-group">
       <label>Status: </label>
       &nbsp;
       <label class="radio-inline">
         <input type="radio"          
-          name="optradio"
+          name="status"
           value="member"
           [(ngModel)]="contact.status"
-          >
+          required>
         &nbsp;Member
       </label>
       &nbsp;
       <label class="radio-inline">
         <input type="radio"          
-          name="optradio"
+          name="status"
           value="nonmember"
           [(ngModel)]="contact.status"
-          >
+          required>
         &nbsp;Non-Member
-      </label>  
+      </label>
+      <div *ngIf="f.submitted && !contact.status" class="text-danger">
+        Status is required.
+      </div>  
     </div>
 
     <div class="form-group">
@@ -108,46 +138,44 @@
         class="form-control"
         name="dob"
         [(ngModel)]="contact.dob"
-        #contactModel="ngModel"
+        #dob="ngModel"
         [max]="maxDate"
         required>
-      <span class="help-block danger" *ngIf="contactModel.errors?.['required'] && contactModel.touched">
-        The date of birth is required
-      </span>
+      <div *ngIf="dob.errors?.['required'] && dob.touched" class="text-danger">
+        The date of birth is required.
+      </div>
     </div>
 
-<div class="form-group">
-  <label for="typeID">Contact Type</label>
-  <select id="typeID" name="typeID" class="form-control" [(ngModel)]="contact.typeID" required>
-    <option value="" disabled>Select a contact type</option>
-    <option *ngFor="let t of types" [value]="t.typeID">{{ t.typeName }}</option>
-  </select>
-</div>
-
-
+    <div class="form-group">
+      <label for="typeID">Contact Type</label>
+      <select id="typeID" name="typeID" class="form-control" [(ngModel)]="contact.typeID" required>
+        <option value="" disabled>Select a contact type</option>
+        <option *ngFor="let t of types" [value]="t.typeID">{{ t.typeName }}</option>
+      </select>
+      <div *ngIf="f.submitted && !contact.typeID" class="text-danger">
+        Contact type is required.
+      </div>
+    </div>
 
     <div class="form-group">
       <label>Upload Image: </label>
-      <input type="file"
+      <input
+        type="file"
         accept="image/*"
         class="form-control"
-        name="imageName"
-        [(ngModel)]="contact.imageName"
-        #imageName="ngModel"
-        (change)="onFileSelected($event)" />      
+        (change)="onFileSelected($event)"
+      />
     </div>
 
     <button 
-    type="submit" 
-    class="btn btn-primary btn-sm" 
-    [disabled]="f.invalid">Add Contact</button>
+      type="submit" 
+      class="btn btn-primary btn-sm" 
+      [disabled]="f.invalid">Add Contact</button>
 
     <button 
-    type="button" 
-    class="btn btn-secondary btn-sm" 
-    routerLink="/contacts">Cancel</button>
-
+      type="button" 
+      class="btn btn-secondary btn-sm" 
+      routerLink="/contacts">Cancel</button>
 
   </form>
 </div>
-
