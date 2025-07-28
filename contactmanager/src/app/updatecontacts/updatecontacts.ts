@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { NgForm, FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -10,7 +10,7 @@ import { Auth } from '../services/auth';
 @Component({
   selector: 'app-updatecontacts',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [CommonModule, HttpClientModule, FormsModule, RouterModule],
   templateUrl: './updatecontacts.html',
   styleUrls: ['./updatecontacts.css'],
   providers: [ContactService]
@@ -124,16 +124,22 @@ ngOnInit(): void {
         this.success = 'Contact updated successfully';
         this.router.navigate(['/contacts']);
       },
-         error: (err: HttpErrorResponse) => {
+        error: (err: HttpErrorResponse) => {
+           console.log('Full error response:', err);
         if (err.status === 409) {
           const body = err.error;
-          this.error = body?.error || 'Duplicate entry detected';
-          this.cdr.detectChanges();
+          this.error = typeof body === 'string' ? body : body?.error || 'Duplicate entry detected';
+        } else if (err.status === 400) {
+          const body = err.error;
+          this.error = typeof body === 'string'
+            ? body
+            : body?.error || 'Invalid image format. Only JPG, PNG, and GIF are allowed.';
         } else {
-          this.error = 'Update failed';
-          this.cdr.detectChanges();
+          this.error = 'An unexpected error occurred';
         }
+        this.cdr.detectChanges();
       }
+
     });
   }
 }

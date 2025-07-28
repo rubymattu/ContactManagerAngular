@@ -1,66 +1,93 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require 'connect.php';
 header('Content-Type: application/json');
 
-// Get the posted JSON data and decode it as associative array
-$data = json_decode(file_get_contents("php://input"), true);
+// Sanitize and validate inputs
+$firstName = trim($_POST['firstName'] ?? '');
+$lastName = trim($_POST['lastName'] ?? '');
+$emailAddress = trim($_POST['emailAddress'] ?? '');
+$phone = trim($_POST['phoneNumber'] ?? '');
+$status = trim($_POST['status'] ?? '');
+$dob = trim($_POST['dob'] ?? '');
+$imageName = $_POST['imageName'] ?? 'placeholder_100.jpg';
+$typeID = isset($_POST['typeID']) ? (int)$_POST['typeID'] : 0;
 
-if (isset($data) && !empty($data)) {
-    // Validate
-    if (
-        trim($data['firstName']) === '' || trim($data['lastName']) === '' ||
-        trim($data['emailAddress']) === '' || trim($data['phoneNumber']) === '' ||
-        trim($data['status']) === '' || trim($data['dob']) === '' ||
-        trim($data['typeID']) === ''
-    ) {
+$allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+$allowedMimeTypes  = ['image/jpeg', 'image/png', 'image/gif'];
+
+// Validate required fields
+if ($firstName === '' || $lastName === '' || $emailAddress === '' || $phone === '') {
+    http_response_code(400);
+    echo json_encode(['error' => 'Missing required fields.']);
+    exit;
+}
+
+// Sanitize for DB
+$firstName = mysqli_real_escape_string($con, $firstName);
+$lastName = mysqli_real_escape_string($con, $lastName);
+$emailAddress = mysqli_real_escape_string($con, $emailAddress);
+$phone = mysqli_real_escape_string($con, $phone);
+$status = mysqli_real_escape_string($con, $status);
+$dob = mysqli_real_escape_string($con, $dob);
+$typeID = mysqli_real_escape_string($con, $typeID);
+
+// Check if a new image is uploaded
+if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+    $fileTmpPath = $_FILES['image']['tmp_name'];
+    $fileName = $_FILES['image']['name'];
+    $fileSize = $_FILES['image']['size'];
+
+    $fileExt  = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    $fileType = mime_content_type($fileTmpPath);
+    $uploadFileDir = './uploads/';
+
+    // Ensure upload directory exists
+    if (!is_dir($uploadFileDir)) {
+        mkdir($uploadFileDir, 0755, true);
+    }
+
+    // Optional: Limit file size to 2MB
+    if ($fileSize > 2 * 1024 * 1024) {
         http_response_code(400);
-        echo json_encode(['message' => 'Missing required fields']);
+        echo json_encode(['error' => 'File size exceeds 2MB limit.']);
         exit;
     }
 
-    // Sanitize
-    $firstName = mysqli_real_escape_string($con, trim($data['firstName']));
-    $lastName = mysqli_real_escape_string($con, trim($data['lastName']));
-    $emailAddress = mysqli_real_escape_string($con, trim($data['emailAddress']));
-    $phoneNumber = mysqli_real_escape_string($con, trim($data['phoneNumber']));
-    $status = mysqli_real_escape_string($con, trim($data['status']));
-    $dob = mysqli_real_escape_string($con, trim($data['dob']));
-    $imageName = mysqli_real_escape_string($con, trim($data['imageName']));
-    $typeID = (int) $data['typeID'];
-
-    // Fix image name
-    $origimg = str_replace('\\', '/', $imageName);
-    $new = basename($origimg);
-    if (empty($new)) {
-        $new = 'placeholder_100.jpg';
+    // Validate file format
+    if (!in_array($fileExt, $allowedExtensions) || !in_array($fileType, $allowedMimeTypes)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid image format. Only JPG, PNG, and GIF are allowed.']);
+        exit;
     }
 
-    // Store the contact
-    $sql = "INSERT INTO `contacts`
-            (`contactID`, `firstName`, `lastName`, `emailAddress`, `phoneNumber`, `status`, `dob`, `imageName`, `typeID`) 
-            VALUES 
-            (null, '{$firstName}', '{$lastName}', '{$emailAddress}', '{$phoneNumber}', '{$status}', '{$dob}', '{$new}', {$typeID})";
+    $dest_path = $uploadFileDir . $fileName;
 
-    if (mysqli_query($con, $sql)) {
-        http_response_code(201);
-        $contact = [
-            'firstName' => $firstName,
-            'lastName' => $lastName,
-            'emailAddress' => $emailAddress,
-            'phoneNumber' => $phoneNumber,
-            'status' => $status,
-            'dob' => $dob,
-            'imageName' => $new,
-            'typeID' => $typeID,
-            'contactID' => mysqli_insert_id($con)
-        ];
-        echo json_encode(['data' => $contact]);
+    if (move_uploaded_file($fileTmpPath, $dest_path)) {
+        $imageName = $fileName;
     } else {
-        http_response_code(422);
-        echo json_encode(['message' => 'Failed to insert contact']);
+        http_response_code(500);
+        echo json_encode(['error' => 'Failed to move uploaded file.']);
+        exit;
     }
-} else {
-    http_response_code(400);
-    echo json_encode(['message' => 'No data received']);
 }
-?>
+
+// Escape image name
+$imageName = mysqli_real_escape_string($con, $imageName);
+
+// Insert into database
+$sql = "INSERT INTO `contacts` 
+        (`firstName`, `lastName`, `emailAddress`, `phoneNumber`, `status`, `dob`, `imageName`, `typeID`) 
+        VALUES 
+        ('$firstName', '$lastName', '$emailAddress', '$phone', '$status', '$dob', '$imageName', '$typeID')";
+
+if (mysqli_query($con, $sql)) {
+    http_response_code(201);
+    echo json_encode(['message' => 'Contact created successfully']);
+} else {
+    http_response_code(422);
+    echo json_encode(['error' => 'Database insert failed']);
+}

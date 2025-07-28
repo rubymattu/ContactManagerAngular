@@ -1,7 +1,11 @@
 <?php
-require 'connect.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-// Sanitize and validate inputs
+require 'connect.php';
+header('Content-Type: application/json');
+
 $contactID = isset($_POST['contactID']) ? (int)$_POST['contactID'] : 0;
 $firstName = trim($_POST['firstName'] ?? '');
 $lastName = trim($_POST['lastName'] ?? '');
@@ -12,12 +16,17 @@ $dob = trim($_POST['dob'] ?? '');
 $originalImageName = $_POST['originalImageName'] ?? '';
 $typeID = isset($_POST['typeID']) ? (int)$_POST['typeID'] : 0;
 
-// Validation
+// Allowed formats
+$allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+$allowedMimeTypes  = ['image/jpeg', 'image/png', 'image/gif'];
+
+// Required field check
 if (
     $contactID < 1 || $firstName === '' || $lastName === '' ||
-    $emailAddress === '' || $phone === '' 
+    $emailAddress === '' || $phone === ''
 ) {
     http_response_code(400);
+    echo json_encode(['error' => 'Missing required fields.']);
     exit;
 }
 
@@ -33,17 +42,33 @@ $typeID = mysqli_real_escape_string($con, $typeID);
 
 $imageName = $originalImageName;
 
-// Check if a new image is uploaded
 if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
     $fileTmpPath = $_FILES['image']['tmp_name'];
     $fileName = $_FILES['image']['name'];
+    $fileExt = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     $uploadFileDir = './uploads/';
-    $dest_path = $uploadFileDir . $fileName;
 
+
+    // Extension check
+    if (!in_array($fileExt, $allowedExtensions)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid file extension. Only JPG, PNG, and GIF are allowed.']);
+        exit;
+    }
+
+    // MIME check using getimagesize
+    $imageInfo = getimagesize($fileTmpPath);
+    if (!$imageInfo || !in_array($imageInfo['mime'], $allowedMimeTypes)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid image MIME type. Only JPG, PNG, and GIF are allowed.']);
+        exit;
+    }
+
+    $dest_path = $uploadFileDir . basename($fileName);
     if (move_uploaded_file($fileTmpPath, $dest_path)) {
         $imageName = $fileName;
 
-        // Delete old image if not placeholder
+        // Delete old image if it's not placeholder
         if ($originalImageName !== 'placeholder_100.jpg') {
             $oldImagePath = $uploadFileDir . $originalImageName;
             if (file_exists($oldImagePath)) {
@@ -57,18 +82,19 @@ if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
     }
 }
 
-// Update the contact
+// Escape image name
 $imageName = mysqli_real_escape_string($con, $imageName);
 
+// Update DB
 $sql = "UPDATE `contacts` SET 
-          `firstName` = '$firstName',
-          `lastName` = '$lastName',
-          `emailAddress` = '$emailAddress',
-          `phoneNumber` = '$phone',
-          `status` = '$status',
-          `dob` = '$dob',
-          `imageName` = '$imageName',
-            `typeID` = '$typeID'
+        `firstName` = '$firstName',
+        `lastName` = '$lastName',
+        `emailAddress` = '$emailAddress',
+        `phoneNumber` = '$phone',
+        `status` = '$status',
+        `dob` = '$dob',
+        `imageName` = '$imageName',
+        `typeID` = '$typeID'
         WHERE `contactID` = '$contactID'
         LIMIT 1";
 
@@ -79,3 +105,4 @@ if (mysqli_query($con, $sql)) {
     http_response_code(422);
     echo json_encode(['error' => 'Database update failed']);
 }
+?>
