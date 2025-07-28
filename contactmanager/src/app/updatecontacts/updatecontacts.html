@@ -18,7 +18,10 @@
   </a>
 </div>
 <div class="container">
-  <h2>Edit Contact</h2>
+  <div class="toolbar">
+    <h2>{{ userName }}'s Edit Contact</h2>
+    <button (click)="authService.logout()" class="btn btn-sm btn-danger">Logout</button>
+  </div>
   <form #f="ngForm" (ngSubmit)="updateContact(f)">
 
     <div class="form-group">
@@ -67,7 +70,7 @@
   <label for="typeID">Contact Type</label>
   <select id="typeID" name="typeID" class="form-control" [(ngModel)]="contact.typeID" required>
     <option value="" disabled>Select a contact type</option>
-    <option *ngFor="let t of types" [value]="t.typeID">{{ t.typeName }}</option>
+    <option *ngFor="let t of types" [value]="+t.typeID">{{ t.typeName }}</option>
   </select>
 </div>
 
