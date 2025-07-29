@@ -52,7 +52,7 @@ ngOnInit(): void {
     this.contactService.get(id).subscribe((res: Contact) => {
       this.contact = res;
     });
-  this.contactID = +this.route.snapshot.paramMap.get('id')!;
+    this.contactID = +this.route.snapshot.paramMap.get('id')!;
 
   // Load contact types first
   this.http.get<{ typeID: number, typeName: string }[]>('http://localhost/contactmanagerangular/contactapi/types.php')
