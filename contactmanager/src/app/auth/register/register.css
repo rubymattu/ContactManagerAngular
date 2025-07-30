@@ -27,6 +27,11 @@
   transition: border-color 0.3s;
 }
 
+.form-container label {
+  display: inline;
+  margin-bottom: 8px;
+}
+
 .form-container input:focus {
   border-color: #007bff;
   outline: none;

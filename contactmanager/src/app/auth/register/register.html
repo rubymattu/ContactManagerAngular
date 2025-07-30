@@ -1,13 +1,26 @@
 <div class="form-container">
   <h2>Register</h2>
-  <button class="btn btn-outline-primary" routerLink="/login">Login</button>
-  <form (ngSubmit)="register()">
-    <input type="text" [(ngModel)]="userName" name="username" placeholder="Username" required />
-    <input type="email" [(ngModel)]="emailAddress" name="emailAddress" placeholder="Email" required />
-    <input type="password" [(ngModel)]="password" name="password" placeholder="Password" required />
-    <button type="submit">Register</button>
-    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
-    <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+  <form #regForm="ngForm" (ngSubmit)="register(regForm)" novalidate>
+
+    <input type="text" name="userName" placeholder="Username" [(ngModel)]="userName" required />
+    <div *ngIf="regForm.submitted && !userName" class="error">Username is required</div>
+
+    <input type="password" name="password" placeholder="Password"[(ngModel)]="password" required minlength="6" />
+    <div *ngIf="regForm.submitted && !password" class="error">Password is required</div>
+
+    <input type="password" name="confirmPassword" placeholder="Confirm Password"[(ngModel)]="confirmPassword" required />
+    <div *ngIf="confirmPassword && confirmPassword !== password" class="error">
+      Passwords do not match.
+    </div>
+
+    <input type="email" name="emailAddress" placeholder="Email Address"[(ngModel)]="emailAddress" required />
+    <div *ngIf="regForm.submitted && !emailAddress" class="error">Email is required</div>
+
+    <button type="submit" [disabled]="!regForm.valid || password !== confirmPassword">
+      Register
+    </button>
+
+    <div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>
+    <div class="success" *ngIf="successMessage">{{ successMessage }}</div>
   </form>
 </div>
-
